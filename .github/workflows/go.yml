@@ -30,6 +30,9 @@ jobs:
     
     - name: Iniciando o Postgres
       run: docker compose up -d postgres
+    
+    - name: Esperar DB subir
+      run: sleep 10
 
     - name: Test
       run: go test -v main_test.go 
