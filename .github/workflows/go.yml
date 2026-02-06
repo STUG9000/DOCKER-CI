@@ -11,9 +11,10 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        go_version: ['1.18', '1.17', '>=1.18']
-        os: ['ubuntu-latest', 'ubuntu-18.04']
+        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
+        go_version: ["1.17.x", "1.18.x", "stable"]
     steps:
     - uses: actions/checkout@v3
 
