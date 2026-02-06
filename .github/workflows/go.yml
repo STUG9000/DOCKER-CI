@@ -33,7 +33,12 @@ jobs:
 
   build:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
+        go_version: ["1.17.x", "1.18.x", "stable"]
     steps:
     - uses: actions/checkout@v3
 
