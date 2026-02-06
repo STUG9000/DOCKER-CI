@@ -21,6 +21,7 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go_version }}
+        
 
     - name: Iniciando o Postgres
       run: docker compose up -d postgres
@@ -33,12 +34,11 @@ jobs:
 
   build:
     needs: test
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
-        go_version: ["1.17.x", "1.18.x", "stable"]
+        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04] 
     steps:
     - uses: actions/checkout@v3
 
