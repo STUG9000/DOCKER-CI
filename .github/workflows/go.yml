@@ -2,50 +2,74 @@ name: Go
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
-    branches: [ "*" ]
+    branches: ["*"]
 
 jobs:
+  
   test:
+    timeout-minutes: 10
     runs-on: ${{ matrix.os }}
+    env:
+      HOST: localhost
+      PORT: 5432
+      USER: root
+      PASSW: root
+      DBNAME: root
+      
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
-        go_version: ["1.17.x", "1.18.x", "stable"]
+        go_version: ["1.20.x", "stable"] # (recomendo tirar 1.17/1.18)
+
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ matrix.go_version }}
-        
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go_version }}
+          cache: true
 
-    - name: Iniciando o Postgres
-      run: docker compose up -d postgres
+      - name: Start Postgres
+        run: docker compose up -d postgres
 
-    - name: Esperar DB subir
-      run: sleep 20
+      - name: Wait for Postgres (pg_isready)
+        run: |
+          for i in {1..60}; do
+            if docker compose exec -T postgres pg_isready -U postgres; then
+              echo "Postgres ready!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Postgres did not become ready"
+          docker compose logs postgres
+          exit 1
 
-    - name: Test
-      run: go test -v main_test.go
+      - name: Test
+        env:
+          DB_HOST: localhost
+          DB_PORT: "5432"
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: postgres
+        run: go test ./... -v -count=1
 
   build:
     needs: test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04] 
+    timeout-minutes: 5
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: "stable"
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "stable"
+          cache: true
 
-    - name: Build
-      run: go build -v main.go
+      - name: Build
+        run: go build -v ./...
