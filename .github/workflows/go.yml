@@ -10,7 +10,7 @@ jobs:
   
   test:
     timeout-minutes: 10
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     env:
       HOST: localhost
       PORT: 5432
