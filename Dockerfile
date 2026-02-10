@@ -10,4 +10,4 @@ ENV USER=root PASSW=root DBNAME=root
 
 COPY ./main.exe main.exe
 
-CMD [ "./main" ]
+CMD [ "./main" ] 
