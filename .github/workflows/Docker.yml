@@ -19,3 +19,10 @@ jobs:
       with:
         username: stug9000
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v6.19.1
+      with:
+        context: .
+        file: ./Dockerfile 
+        push: true
+        tags: stug9000/projeto-base:${{github.ref_name}}
