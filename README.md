@@ -51,7 +51,11 @@ Valida a conexão
 Executa:
 
 go test ./...
+2️⃣ Build
 
+Compila o projeto após os testes passarem.
+
+O artifact gerado é compartilhado entre os jobs para garantir consistência no deploy.
 3️⃣ Docker
 
 Workflow reutilizável responsável por:
