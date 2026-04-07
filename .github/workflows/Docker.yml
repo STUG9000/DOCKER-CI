@@ -31,4 +31,4 @@ jobs:
         context: .
         file: ./Dockerfile 
         push: true
-        tags: stug9000/projeto-base:${{github.ref_name}}
+        tags: stug9000/projeto-base:${{ github.ref_name }}-latest
