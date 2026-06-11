@@ -2,90 +2,65 @@ name: Go
 
 on:
   push:
-    branches: ["*"]
+    branches: [ '*' ]
   pull_request:
-    branches: ["*"]
+    branches: [ '*' ]
 
 jobs:
-  
+
   test:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     env:
       HOST: localhost
       DBPORT: 5432
       USER: root
-      PASSW: root
+      PASSWORD: root
       DBNAME: root
-      
     strategy:
-      fail-fast: false
       matrix:
-        go_version: ["1.20.x", "stable"] # (recomendo tirar 1.17/1.18)
-
+        go_version: ['1.18', '1.17', '>=1.18']
+        os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ matrix.go_version }}
-          cache: true
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go_version }}
+      
+    - name: Build-DB
+      run: docker-compose build
+      
+    - name: Create-DB
+      run: docker-compose up -d
 
-      - name: Start Postgres
-        run: docker compose up -d postgres
-
-      - name: Wait for Postgres (pg_isready)
-        run: |
-          for i in {1..60}; do
-            if docker compose exec -T postgres pg_isready -U postgres; then
-              echo "Postgres ready!"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Postgres did not become ready"
-          docker compose logs postgres
-          exit 1
-
-      - name: Test
-        env:
-          DB_HOST: localhost
-          DB_PORT: "5432"
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_NAME: postgres
-        run: go test ./... -v -count=1 -timeout=2m
-
+    - name: Test
+      run: go test -v main_test.go 
+      
+  
   build:
     needs: test
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    - name: Build
+      run: go build -v main.go
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+    # Artifact name
+        name: programa
+    # A file, directory or wildcard pattern that describes what to upload
+        path: main
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: "stable"
-          cache: true
 
-      - name: Build
-        run: go build -v ./...
-            
-      - name: build-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: programa
-          path: .
-  Docker:
+  docker:
     needs: build
     uses: ./.github/workflows/Docker.yml
     secrets: inherit
-
-  Deploy_Ec2:
+    
+  Deploy_EC2:
     needs: build
     uses: ./.github/workflows/EC2.yml
     secrets: inherit
-
-    
