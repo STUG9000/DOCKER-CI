@@ -28,6 +28,9 @@ jobs:
       with:
         go-version: ${{ matrix.go_version }}
 
+    - name: Prepare postgres data dir
+      run: sudo mkdir -p /postgres-data && sudo chown -R 999:999 /postgres-data
+
     - name: Build-DB
       run: docker compose build
 
