@@ -28,6 +28,10 @@ jobs:
       with:
         go-version: ${{ matrix.go_version }}
 
+    - name: Pin Postgres image version for CI
+      run: |
+        sed -i 's/image: "postgres"/image: "postgres:16"/' docker-compose.yml
+
     - name: Prepare postgres data dir
       run: sudo mkdir -p /postgres-data && sudo chown -R 999:999 /postgres-data
 
