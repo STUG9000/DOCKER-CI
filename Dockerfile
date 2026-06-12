@@ -5,9 +5,13 @@ EXPOSE 8000
 WORKDIR /app
 
 ENV HOST=localhost DBPORT=5432
-ENV USER=root PASSW=root DBNAME=root
 
+ENV USER=root PASSWORD=root DBNAME=root
 
-COPY ./main.exe main.exe
+COPY ./main main
 
-CMD [ "./main" ] 
+RUN chmod +x main
+
+COPY ./templates/ templates/
+
+CMD [ "./main" ]
