@@ -44,3 +44,5 @@ jobs:
         service: Servico_API-Go
         cluster: API-Go
         wait-for-service-stability: true
+    - name: Requisição
+      run: wget apigo-259582971.us-east-1.elb.amazonaws.com:8000/bruno
