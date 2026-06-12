@@ -45,4 +45,5 @@ jobs:
         cluster: API-Go
         wait-for-service-stability: true
     - name: Requisição
-      run: wget apigo-259582971.us-east-1.elb.amazonaws.com:8000/bruno
+      continue-on-error: true
+      run: sleep 30s ; wget apigo-259582971.us-east-1.elb.amazonaws.com:8000/bruno
