@@ -34,8 +34,16 @@ jobs:
     - name: Create-DB
       run: docker compose up -d
 
+    - name: Wait for Postgres
+      run: |
+        for i in {1..30}; do
+          pg_isready -h localhost -p 5432 -U root && exit 0
+          sleep 1
+        done
+        echo "Postgres did not become ready in time" && exit 1
+
     - name: Test
-      run: go test -v main_test.go 
+      run: go test -v main_test.go
       
   
   build:
