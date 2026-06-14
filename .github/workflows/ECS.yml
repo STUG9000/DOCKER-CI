@@ -17,7 +17,7 @@ jobs:
         aws-region: us-east-1
     
     - name: Obtendo arquivo da tarefa
-      run: aws ecs describe-task-definition --task-definition Tarefa_API-GO --query taskDefinition > task-definition.json
+      run: aws ecs describe-task-definition --task-definition Tarefa_API-GO:5 --query taskDefinition > task-definition.json
 
     - name: copia do task-definition
       run: cp task-definition.json task-definition.json.old
