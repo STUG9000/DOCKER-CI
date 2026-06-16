@@ -44,6 +44,15 @@ jobs:
         service: Servico_API-Go
         cluster: API-Go
         wait-for-service-stability: true
+       
     - name: Requisição
       continue-on-error: true
       run: sleep 30s ; wget apigo-259582971.us-east-1.elb.amazonaws.com:8000/bruno
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: task-definition.json.old 
+        service: Servico_API-Go
+        cluster: API-Go
+        wait-for-service-stability: true
