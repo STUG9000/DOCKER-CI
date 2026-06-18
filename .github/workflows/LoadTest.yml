@@ -16,3 +16,4 @@ jobs:
         aws-access-key-id: ${{ secrets.EC2_USERNAME }}
         aws-secret-access-key: ${{ secrets.EC2_SECRET_KEY }}
         aws-region: us-east-1
+    - run: gitclone https://github.com/STUG9000/Infra_CI
