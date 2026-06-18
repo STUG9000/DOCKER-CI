@@ -1,0 +1,18 @@
+name: Load Test
+
+on:
+  workflow_call:
+
+jobs:
+
+  loadtest:
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+    - uses: actions/checkout@v3
+    - name: configurando credenciais da AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.EC2_USERNAME }}
+        aws-secret-access-key: ${{ secrets.EC2_SECRET_KEY }}
+        aws-region: us-east-1
