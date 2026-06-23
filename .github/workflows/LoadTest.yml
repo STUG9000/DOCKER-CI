@@ -16,7 +16,7 @@ jobs:
         aws-access-key-id: ${{ secrets.EC2_USERNAME }}
         aws-secret-access-key: ${{ secrets.EC2_SECRET_KEY }}
         aws-region: us-east-1
-    - run: gitclone https://github.com/STUG9000/Infra_CI
+    - run: git clone https://github.com/STUG9000/Infra_CI
     
     - name: HashiCorp - Setup Terraform
       uses: hashicorp/setup-terraform@v2.0.3
@@ -33,7 +33,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v6.2.0
       with:
-        python-version: 3.10
+        python-version: '3.10'
     
     - uses: BSFishy/pip-action@v1
       with:
@@ -41,7 +41,6 @@ jobs:
           locust
 
     - run: |
-    - run: | 
         echo "from locust import HttpUser, TaskSet, task, between" >> locustfile.py
         echo "" >> locustfile.py
         echo "class UserTasks(TaskSet):"  >> locustfile.py
@@ -55,4 +54,4 @@ jobs:
         cat locustfile.py
     
     - name: roda teste de carga
-      run: sleeep 60s ; locust -f locustfile.py --headless -u 10 -r r --run-time 60s -H http://${{steps.URL.outputs.stdout}}
+      run: sleep 60s ; locust -f locustfile.py --headless -u 10 -r r --run-time 60s -H http://${{steps.URL.outputs.stdout}}
